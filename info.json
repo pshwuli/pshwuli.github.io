@@ -1,0 +1,90 @@
+{
+    "header": [
+        " *   ",
+        " *   如非需要调试，本文件可删除",
+        " *   非专业人员可将本文件删除",
+        " *   详细介绍请参考: https://bazhan.wang/faq#INFO-JSON",
+        " *   "
+    ],
+    "resources": [
+        {
+            "url": "http://file.tangdouz.com/baidu/",
+            "path": "index.html",
+            "saved": true,
+            "size": 6269,
+            "children": [
+                {
+                    "url": "http://file.tangdouz.com/baidu/img/arrow.png",
+                    "path": "img/arrow.png",
+                    "saved": true,
+                    "size": 0,
+                    "children": []
+                },
+                {
+                    "url": "http://file.tangdouz.com/baidu/img/baidu_logo.png",
+                    "path": "img/baidu_logo.png",
+                    "saved": true,
+                    "size": 0,
+                    "children": []
+                }
+            ]
+        }
+    ],
+    "alias": "file-tangdouz-com-fxlz12c",
+    "info": {
+        "remark": [],
+        "title": "让我帮你百度一下",
+        "domain": "file.tangdouz.com",
+        "origin": "http://file.tangdouz.com",
+        "ip": "61.139.65.249",
+        "main": "index.html",
+        "url": "http://file.tangdouz.com/baidu/",
+        "totalSize": "6.27 kB",
+        "request": {
+            "headers": {
+                "accept": "text/html,*/*",
+                "accept-language": "zh-CN,zh;q=0.9",
+                "cache-control": "no-cache",
+                "cookie": "",
+                "referer": "http://file.tangdouz.com/baidu/",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+                "x-scraper-website": "https://bazhan.wang/"
+            }
+        },
+        "response": {
+            "responseUrl": "http://file.tangdouz.com/baidu/",
+            "redirects": [],
+            "statusCode": 200,
+            "headers": {
+                "server": "marco/2.19",
+                "date": "Tue, 10 Jan 2023 11:02:43 GMT",
+                "content-type": "text/html",
+                "transfer-encoding": "chunked",
+                "connection": "close",
+                "vary": "Accept-Encoding",
+                "x-request-id": "86bfbc9a01dac457887f40ec1ce803cd; 763ebf8f4425c00b847ee90c31fbac17",
+                "x-source": "U/200",
+                "x-upyun-content-length": "7189",
+                "etag": "W/\"776ead1075f39f9881f8f99883a22d3a\"",
+                "last-modified": "Sat, 22 Oct 2022 07:43:40 GMT",
+                "x-upyun-content-type": "text/html",
+                "expires": "Wed, 11 Jan 2023 11:03:03 GMT",
+                "cache-control": "max-age=691200",
+                "age": "604780",
+                "via": "T.45.H, V.mix-js-czx2-046, T.1.H, M.ctn-sc-yan-004"
+            }
+        },
+        "time": {
+            "start": "2023-01-10T11:02:42.597Z",
+            "end": "2023-01-10T11:02:43.338Z"
+        }
+    },
+    "options": {
+        "url": "http://file.tangdouz.com/baidu/",
+        "referer": "",
+        "cookies": "",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "formatter": [],
+        "filenameGenerator": "byType"
+    }
+}
