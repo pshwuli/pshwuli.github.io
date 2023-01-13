@@ -1,2 +1,0 @@
-
-document.write("<img src=http://www.rs100.cn/fun/images/6/2.gif align=middle><img src=http://www.rs100.cn/fun/images/6/3.gif align=middle><img src=http://www.rs100.cn/fun/images/6/6.gif align=middle><img src=http://www.rs100.cn/fun/images/6/4.gif align=middle><img src=http://www.rs100.cn/fun/images/6/5.gif align=middle><img src=http://www.rs100.cn/fun/images/6/6.gif align=middle><img src=http://www.rs100.cn/fun/images/6/3.gif align=middle><img src=http://www.rs100.cn/fun/images/6/4.gif align=middle>");
