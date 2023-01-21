@@ -1,0 +1,37 @@
+安卓下载安装via浏览器
+
+www.coolapk.com/apk/mark.via
+
+装好via浏览器之后, 复制原神观测枢网址
+
+https://bbs.mihoyo.com/ys/strategy/
+
+打开via浏览器, 把网址粘贴在地址栏并打开, 然后登录账号
+
+点标题栏(地址栏)左边的盾牌→查看Cookies
+
+复制文本然后私信发给机器人即可
+
+PC用Chrome或微软Edge之类的即可, 其它浏览器自行尝试
+
+复制原神观测枢网址, 粘贴在地址栏回车, 登录米游社账号
+
+https://bbs.mihoyo.com/ys/strategy/
+
+然后按下键盘上的F12按键(打开开发工具)
+
+然后点Console(控制台), 在下面输入document.cookie
+
+然后再往下面一行冒出来的就是Cookie
+
+复制了私信发给机器人即可
+
+iOS打开链接获取快捷指令, 点添加到快捷指令
+
+https://www.icloud.com/shortcuts/6b76ba13c7be40b69580169507f7034e
+
+在快捷指令App中点击这个快捷指令, 按提示打开Safari并打开米游社网站, 然后登录账号
+
+登录好后, 点下面的 "共享" 按钮, 选最下面的 "米游社Cookie获取"
+
+弹出是否复制到剪贴板, 选择允许, 复制后私信发给机器人即可
