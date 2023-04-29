@@ -8,8 +8,8 @@
   margin: 0 auto;
   padding: 20px;
   text-align: right;
-  width: 100%; /* 让计算机宽度为100% */
-  height: 100%; /* 让计算机高度为100% */
+  width: 100vw; /* 让计算机宽度为100% */
+  height: 100vh; /* 让计算机高度为100% */
   position: fixed; /* 让计算机固定在屏幕上 */
   top: 0;
   left: 0;
