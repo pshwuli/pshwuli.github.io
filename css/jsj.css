@@ -1,0 +1,46 @@
+body {
+  background-image: url('/tupian/shoujibeijing.jpg'); /* 设置背景图片为shoujibeijing.jpg */
+  background-size: cover; /* 让背景图片尽可能地覆盖整个页面 */
+  background-position: center; /* 让背景图片在页面中居中 */
+  font-family: Arial, sans-serif;
+}
+
+#calculator {
+  background-color: rgba(229, 229, 229, 0.7);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  margin: 0;
+  padding: 20px;
+  text-align: right;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+#calculator input[type="button"] {
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  color: #333;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin: 5px;
+  padding: 10px;
+  width: 60px;
+}
+
+#calculator input[type="text"] {
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  color: #000;
+  font-size: 2em;
+  margin: 5px;
+  padding: 10px;
+  text-align: right;
+  width: 260px;
+}
