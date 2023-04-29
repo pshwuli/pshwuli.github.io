@@ -8,9 +8,10 @@
   margin: 0 auto;
   padding: 20px;
   text-align: right;
-  width: 80%; /* 让计算机宽度为浏览器宽度的80% */
-  height: 80vh; /* 让计算机高度为浏览器高度的80% */
-  position: absolute; /* 让计算机脱离文档流，可以覆盖整个屏幕 */
-  top: 10%; /* 让计算机垂直居中 */
-  left: 10%; /* 让计算机水平居中 */
+  width: 100%; /* 让计算机宽度为100% */
+  height: 100%; /* 让计算机高度为100% */
+  position: fixed; /* 让计算机固定在屏幕上 */
+  top: 0;
+  left: 0;
+  opacity: 0.8; /* 让计算机半透明 */
 }
