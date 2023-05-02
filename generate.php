@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function generateShortUrl($conn) {
 
-    $shortUrl = "https://662102.top/kzsk" . rand(100000, 999999);
+    $shortUrl = "https://662102.top/" . rand(100000, 999999);
 
     $sql = "SELECT short_url FROM short_urls WHERE short_url = '$shortUrl'";
 
