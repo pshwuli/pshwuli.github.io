@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>实时渲染网页</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		.container {
+			margin: 0 auto;
+			max-width: 800px;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		}
+		.input {
+			display: block;
+			width: 100%;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+		.btn {
+			display: block;
+			width: 100%;
+			padding: 10px;
+			background-color: #4285f4;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+		.btn:hover {
+			background-color: #3367d6;
+		}
+		.output {
+			margin-top: 20px;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+			overflow: auto;
+			height: auto;
+		}
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 20px;
+		}
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+		th {
+			background-color: #f2f2f2;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		th:hover {
+			background-color: #e6e6e6;
+		}
+		.asc:after {
+			content: " ▲";
+		}
+		.desc:after {
+			content: " ▼";
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<input type="text" class="input" placeholder="在这里输入HTML代码">
+		<button class="btn">渲染</button>
+		<div class="output"></div>
+	</div>
+	<script>
+		const input = document.querySelector('.input');
+		const btn = document.querySelector('.btn');
+		const output = document.querySelector('.output');
+		
+		btn.addEventListener('click', () => {
+			output.innerHTML = input.value;
+			
+			// 添加表格排序功能
+			const table = output.querySelector('table');
+			if (table) {
+				const headers = table.querySelectorAll('th');
+				headers.forEach(header => {
+					header.addEventListener('click', () => {
+						const column = header.dataset.column;
+						const direction = header.dataset.direction === 'asc' ? 'desc' : 'asc';
+						header.dataset.direction = direction;
+						sortTable(table, column, direction);
+					});
+				});
+			}
+		});
+		
+		// 排序表格
+		function sortTable(table, column, direction) {
+			const tbody = table.querySelector('tbody');
+			const rows = Array.from(tbody.querySelectorAll('tr'));
+			const sortFunction = getSortFunction(column, direction);
+			rows.sort(sortFunction);
+			tbody.innerHTML = '';
+			rows.forEach(row => tbody.appendChild(row));
+		}
+		
+		// 获取排序函数
+		function getSortFunction(column, direction) {
+			const modifier = direction === 'asc' ? 1 : -1;
+			return (a, b) => {
+				const aValue = a.querySelector(`td[data-column="${column}"]`).textContent;
+				const bValue = b.querySelector(`td[data-column="${column}"]`).textContent;
+				if (isNaN(aValue) || isNaN(bValue)) {
+					return aValue.localeCompare(bValue) * modifier;
+				} else {
+					return (aValue - bValue) * modifier;
+				}
+			};
+		}
+	</script>
+</body>
+</html>
