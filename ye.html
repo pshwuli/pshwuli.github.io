@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>OpenAI API Key查询</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.input-box {
+  margin-bottom: 10px;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 16px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+.buy-account {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  z-index: 9999;
+  transition: background-color 0.3s ease;
+}
+
+.buy-account:hover {
+  background-color: #0056b3;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+  .buy-account {
+    font-size: 18px;
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .buy-account {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>OpenAI API Key查询</h1>
+    <div class="input-box">
+      <input type="text" id="api-key-input" placeholder="请输入OpenAI的API Key">
+    </div>
+    <button onclick="fetchAPIKey()">查询</button>
+    <div class="result">
+      <p><strong>总额度：</strong> <span id="total-quota"></span></p>
+      <p><strong>已使用额度：</strong> <span id="used-quota"></span></p>
+      <p><strong>剩余可用额度：</strong> <span id="remaining-quota"></span></p>
+    </div>
+  </div>
+
+  <a href="https://qm.qq.com/cgi-bin/qm/qr?k=F83cmzsf6SwvvJ6LthhhrbhcGnbEFcNB&noverify=0&personal_qrcode_source=4" class="buy-account">购买账号</a>
+
+  <script>
+    function fetchAPIKey() {
+      var apiKey = document.getElementById('api-key-input').value;
+
+      if (!apiKey.startsWith("sk-")) {
+        alert("无效的API密钥，请检查您的API密钥是否正确");
+        return;
+      }
+
+      fetch('https://api.openai.com/v1/usage', {
+        headers: {
+          'Authorization': 'Bearer ' + apiKey
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('API Key查询失败');
+        }
+        return response.json();
+      })
+      .then(data => {
+        var totalQuota = data.data[0].total;
+        var usedQuota = data.data[0].usage;
+        var remainingQuota = totalQuota - usedQuota;
+
+        document.getElementById('total-quota').textContent = totalQuota.toFixed(1);
+        document.getElementById('used-quota').textContent = usedQuota.toFixed(1);
+        document.getElementById('remaining-quota').textContent = remainingQuota.toFixed(1);
+      })
+      .catch(error => {
+        if (error.message === 'API Key查询失败') {
+          alert('无法查询您的API密钥，请检查您的API密钥是否正确或账户是否被封禁');
+        } else {
+          console.error('发生错误:', error);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
