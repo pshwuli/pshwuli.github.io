@@ -13,7 +13,8 @@ elif [ "$choice" == "1" ]; then
     sleep 0.5
   }
 
-  show_prompt "可以让我直接远程的找我，反正别找我，不解决"
+  show_prompt "可以让我直接远程的找我，我会直接远程"
+  sleep 2
   show_prompt "添加node.js源"
   curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
   show_prompt "安装软件"
