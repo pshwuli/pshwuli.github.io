@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无敌榜nb - 二维码合并工具</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部 -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="app-icon">🔗</span>
+                    QR Fusion
+                </h1>
+                <p class="app-subtitle">智能二维码合并与定制工具</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-secondary" id="resetBtn">
+                    <span>🔄</span> 重置
+                </button>
+            </div>
+        </header>
+
+        <!-- 主要内容 -->
+        <main class="main-content">
+            <!-- 控制面板 -->
+            <section class="control-panel">
+                <div class="panel-card">
+                    <h2 class="panel-title">上传管理</h2>
+                    
+                    <!-- 二维码上传 -->
+                    <div class="upload-section">
+                        <h3 class="section-title">二维码图片</h3>
+                        <div class="upload-area qr-upload" id="qrUploadArea">
+                            <div class="upload-icon">📱</div>
+                            <p class="upload-text">拖放或点击上传二维码</p>
+                            <p class="upload-hint">支持 PNG, JPG, WebP 格式</p>
+                            <button class="upload-btn">选择文件</button>
+                            <input type="file" id="qrFileInput" accept="image/*" class="file-input">
+                        </div>
+                    </div>
+
+                    <!-- 背景图上传 -->
+                    <div class="upload-section">
+                        <h3 class="section-title">背景图片</h3>
+                        <div class="background-upload-grid">
+                            <div class="background-upload-item">
+                                <label class="upload-label">P 背景图</label>
+                                <div class="upload-area bg-upload" id="pBgUploadArea">
+                                    <div class="upload-icon">🎨</div>
+                                    <p class="upload-text">P 背景</p>
+                                    <input type="file" id="pBgFileInput" accept="image/*" class="file-input">
+                                </div>
+                            </div>
+                            <div class="background-upload-item">
+                                <label class="upload-label">S 背景图</label>
+                                <div class="upload-area bg-upload" id="sBgUploadArea">
+                                    <div class="upload-icon">🎨</div>
+                                    <p class="upload-text">S 背景</p>
+                                    <input type="file" id="sBgFileInput" accept="image/*" class="file-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="action-section">
+                        <div class="action-buttons">
+                            <button class="action-btn primary" id="pMergeBtn">
+                                <span>✨</span> P 合并
+                            </button>
+                            <button class="action-btn secondary" id="sMergeBtn">
+                                <span>🎯</span> S 合并
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设置面板 -->
+                <div class="panel-card settings-panel">
+                    <div class="settings-header">
+                        <h2 class="panel-title">自定义设置</h2>
+                        <button class="settings-toggle" id="settingsToggle">
+                            <span class="toggle-icon">⚙️</span>
+                        </button>
+                    </div>
+                    <div class="settings-content" id="settingsContent" style="display: none;">
+                        <div class="setting-tab">
+                            <button class="tab-button active" data-tab="p-settings">P 背景设置</button>
+                            <button class="tab-button" data-tab="s-settings">S 背景设置</button>
+                        </div>
+                        
+                        <div class="tab-content active" id="p-settings">
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>二维码宽度 (%)</span>
+                                    <span class="value-display" id="pQrWidthValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="pQrWidth" min="5" max="50">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>水平位置 (%)</span>
+                                    <span class="value-display" id="pQrXValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="pQrX" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>垂直位置 (%)</span>
+                                    <span class="value-display" id="pQrYValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="pQrY" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>透明度 (%)</span>
+                                    <span class="value-display" id="pQrOpacityValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="pQrOpacity" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>旋转角度</span>
+                                    <span class="value-display" id="pQrRotationValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="pQrRotation" min="0" max="360">
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="s-settings">
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>二维码宽度 (%)</span>
+                                    <span class="value-display" id="sQrWidthValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="sQrWidth" min="5" max="50">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>水平位置 (%)</span>
+                                    <span class="value-display" id="sQrXValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="sQrX" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>垂直位置 (%)</span>
+                                    <span class="value-display" id="sQrYValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="sQrY" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>透明度 (%)</span>
+                                    <span class="value-display" id="sQrOpacityValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="sQrOpacity" min="0" max="100">
+                            </div>
+                            <div class="setting-group">
+                                <label class="setting-label">
+                                    <span>旋转角度</span>
+                                    <span class="value-display" id="sQrRotationValue"></span>
+                                </label>
+                                <input type="range" class="setting-slider" id="sQrRotation" min="0" max="360">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 二维码信息 -->
+                <div class="panel-card info-panel">
+                    <h2 class="panel-title">二维码信息</h2>
+                    <div class="qr-info-content" id="qrData">
+                        <div class="info-placeholder">
+                            <span>📋</span>
+                            <p>等待上传二维码图片...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 预览面板 -->
+            <section class="preview-panel">
+                <div class="preview-grid">
+                    <!-- 原二维码 -->
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h3 class="preview-title">原二维码</h3>
+                            <div class="preview-badge">原始</div>
+                        </div>
+                        <div class="preview-content" id="originalPreview">
+                            <div class="preview-placeholder">
+                                <span>🖼️</span>
+                                <p>等待上传二维码</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- P背景 -->
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h3 class="preview-title">P 背景模板</h3>
+                            <div class="preview-badge primary">P</div>
+                        </div>
+                        <div class="preview-content" id="pBackgroundPreview">
+                            <div class="preview-placeholder">
+                                <span>🎨</span>
+                                <p>P 背景图片</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S背景 -->
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h3 class="preview-title">S 背景模板</h3>
+                            <div class="preview-badge secondary">S</div>
+                        </div>
+                        <div class="preview-content" id="sBackgroundPreview">
+                            <div class="preview-placeholder">
+                                <span>🎯</span>
+                                <p>S 背景图片</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 合并结果 -->
+                    <div class="preview-card result-card">
+                        <div class="preview-header">
+                            <h3 class="preview-title">合并结果</h3>
+                            <div class="preview-badge success">结果</div>
+                        </div>
+                        <div class="preview-content" id="resultPreview">
+                            <div class="preview-placeholder">
+                                <span>✨</span>
+                                <p>选择合并方式生成结果</p>
+                            </div>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="download-btn" id="downloadBtn" disabled>
+                                <span>💾</span> 下载图片
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部 -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p>&copy; 2025 无敌榜nb - 专业二维码合并工具</p>
+                <div class="footer-links">
+                    <span>🚀 快速 · 精准 · 专业</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
