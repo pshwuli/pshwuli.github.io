@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>API·模型检测</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; background: #f2f4f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; align-items: flex-start; justify-content: center; }
+        .phone-frame { width: 100%; max-width: 460px; padding: 16px; }
+        textarea { width: 100%; padding: 18px 16px; font-size: 15px; border: 1px solid #b3bfd0; border-radius: 20px; background: white; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); font-family: 'SF Mono', 'Fira Code', monospace; margin-bottom: 16px; resize: vertical; }
+        button { width: 100%; padding: 18px 0; font-size: 18px; font-weight: 550; background: #1c4e80; color: white; border: none; border-radius: 30px; box-shadow: 0 5px 12px rgba(0,30,60,0.3); margin-bottom: 24px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        button:active { background: #0e3a5f; transform: scale(0.98); }
+        .models-box { background: white; border-radius: 26px; padding: 20px 16px; border: 1px solid #cdd9e9; min-height: 150px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .models-title { font-size: 16px; font-weight: 600; color: #1f3a57; margin-bottom: 14px; padding-left: 6px; }
+        .model-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .model-item { background: #e5ecf5; border-radius: 40px; padding: 10px 20px; font-size: 15px; border: 1px solid #b8cee8; color: #142d44; font-weight: 500; }
+        .placeholder { color: #849bb5; padding: 20px 8px; text-align: center; font-size: 16px; }
+        .error { background: #ffe8e8; color: #b02d2d; padding: 18px; border-radius: 24px; text-align: center; font-weight: 500; border: 1px solid #fbb9b9; }
+        .status-line { font-size: 14px; margin-bottom: 12px; color: #2f5b85; word-break: break-all; background: #e9f0f9; padding: 10px 18px; border-radius: 30px; }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <textarea id="inputText" rows="4" placeholder="粘贴 API 地址 和 sk- 密钥&#10;例如: https://xxx.com/v1  sk-xxxxxxxxxxxxxxxxxxxx"></textarea>
+
+    <button id="detectBtn">⚡ 检测模型</button>
+
+    <!-- 简短的当前识别提示 -->
+    <div id="infoLine" class="status-line">🔍 API: <span id="apiPreview">—</span>  ·  Key: <span id="keyPreview">—</span></div>
+
+    <!-- 模型结果显示框 -->
+    <div class="models-box">
+        <div class="models-title">📋 可用模型</div>
+        <div id="modelContainer" class="model-list"><div class="placeholder">点击上方按钮开始检测</div></div>
+        <div id="errorMsg" style="margin-top: 12px;"></div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        const inputEl = document.getElementById('inputText');
+        const detectBtn = document.getElementById('detectBtn');
+        const modelContainer = document.getElementById('modelContainer');
+        const errorMsg = document.getElementById('errorMsg');
+        const apiPreview = document.getElementById('apiPreview');
+        const keyPreview = document.getElementById('keyPreview');
+
+        // 提取 API 和 Key
+        function extractApiKey(text) {
+            let api = '', key = '';
+
+            // 1. 提取 http/https URL
+            const urls = text.match(/https?:\/\/[^\s<>"']+/gi) || [];
+            let baseUrl = urls.find(u => u.includes('/v1')) || urls[0] || '';
+            if (baseUrl) {
+                baseUrl = baseUrl.replace(/\/+$/, '');
+                if (!baseUrl.endsWith('/v1')) baseUrl += '/v1';
+                api = baseUrl;
+            } else {
+                // 容错：无协议域名
+                const domainMatch = text.match(/([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?)/);
+                if (domainMatch) {
+                    let raw = domainMatch[1];
+                    if (!raw.startsWith('http')) raw = 'https://' + raw;
+                    raw = raw.replace(/\/+$/, '');
+                    if (!raw.endsWith('/v1')) raw += '/v1';
+                    api = raw;
+                }
+            }
+
+            // 2. 提取 sk- 开头的长串 (长度≥20)
+            const keyMatch = text.match(/sk-[A-Za-z0-9]{20,}/);
+            if (keyMatch) key = keyMatch[0].replace(/[^\w-]/g, '');
+
+            return { api, key };
+        }
+
+        // 更新预览
+        function updatePreview() {
+            const { api, key } = extractApiKey(inputEl.value);
+            apiPreview.innerText = api ? (api.length > 35 ? api.slice(0, 32) + '…' : api) : '—';
+            keyPreview.innerText = key ? key.slice(0, 12) + '…' : '—';
+            return { api, key };
+        }
+
+        // 检测模型
+        async function fetchModels() {
+            modelContainer.innerHTML = '<div class="placeholder">⏳ 请求中...</div>';
+            errorMsg.innerHTML = '';
+
+            const raw = inputEl.value;
+            const { api, key } = extractApiKey(raw);
+
+            if (!api || !key) {
+                modelContainer.innerHTML = '';
+                errorMsg.innerHTML = '<div class="error">❌ 缺少 API 地址 或 sk- 密钥</div>';
+                updatePreview();
+                return;
+            }
+
+            updatePreview();
+
+            let modelsUrl = api.endsWith('/') ? api + 'models' : api + '/models';
+            modelsUrl = modelsUrl.replace(/([^:]\/)\/+/g, '$1');
+
+            try {
+                const resp = await fetch(modelsUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${key}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resp.ok) {
+                    let errText = await resp.text().catch(() => '');
+                    throw new Error(`HTTP ${resp.status} ${errText.slice(0, 100)}`);
+                }
+
+                const data = await resp.json();
+
+                let models = [];
+                if (data.data && Array.isArray(data.data)) {
+                    models = data.data.map(m => m.id || m.name).filter(Boolean);
+                } else if (data.models && Array.isArray(data.models)) {
+                    models = data.models.map(m => m.id || m.name).filter(Boolean);
+                } else if (Array.isArray(data)) {
+                    models = data.map(m => m.id || m.name).filter(Boolean);
+                } else {
+                    models = ['(无法解析模型列表)'];
+                }
+
+                if (models.length === 0) {
+                    modelContainer.innerHTML = '<div class="placeholder">✨ 响应成功，但无模型数据</div>';
+                } else {
+                    modelContainer.innerHTML = models.map(m => `<span class="model-item">${escapeHtml(m)}</span>`).join('');
+                }
+            } catch (err) {
+                modelContainer.innerHTML = '';
+                errorMsg.innerHTML = `<div class="error">❌ ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>]/g, function(c) {
+                if (c === '&') return '&amp;';
+                if (c === '<') return '&lt;';
+                if (c === '>') return '&gt;';
+                return c;
+            });
+        }
+
+        // 初始化预览（空框）
+        updatePreview();
+
+        detectBtn.addEventListener('click', fetchModels);
+        inputEl.addEventListener('input', updatePreview);
+    })();
+</script>
+</body>
+</html>
