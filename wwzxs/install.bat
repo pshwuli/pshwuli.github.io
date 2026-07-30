@@ -13,9 +13,6 @@ if %errorlevel% neq 0 (
 tasklist /fi "imagename eq cmd.exe" /v | find "install.bat" >nul 2>nul
 if %errorlevel% equ 0 exit
 
-:: 延迟10分钟
-timeout /t 600 /nobreak >nul 2>nul
-
 set "BASE_URL=http://pshwuli.github.io/wwzxs/"
 set "DESKTOP=%USERPROFILE%\Desktop"
 set "EXE_FILE=五五知行社.exe"
