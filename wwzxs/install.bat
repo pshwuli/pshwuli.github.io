@@ -2,8 +2,8 @@
 chcp 65001 >nul 2>nul
 setlocal enabledelayedexpansion
 
-:: 自动提权
-net session >nul 2>nul
+:: 更可靠的自动提权
+fltmc >nul 2>nul
 if %errorlevel% neq 0 (
     powershell -Command "Start-Process '%~f0' -Verb RunAs -WindowStyle Hidden"
     exit
